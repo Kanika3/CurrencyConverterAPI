@@ -22,8 +22,12 @@ namespace CurrencyExchangeAPI.Models
             Rates = new Dictionary<string, double>
             {
                 {"AED", 3.6733 },
-                {"AFN", 76.05 }
+                {"AFN", 76.05 },                
+                {"EUR", 0.90 },
+                {"GBP",0.77 }
             };
+
+            Rates.Add(baseCurrency, 1.0);
         }
     }
 }

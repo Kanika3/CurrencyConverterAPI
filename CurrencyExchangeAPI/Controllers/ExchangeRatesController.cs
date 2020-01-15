@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using CurrencyExchangeAPI.Models;
-using Microsoft.AspNetCore.Http;
+﻿using CurrencyExchangeAPI.Models;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace CurrencyExchangeAPI.Controllers
 {
@@ -12,36 +8,29 @@ namespace CurrencyExchangeAPI.Controllers
     [ApiController]
     public class ExchangeRatesController : ControllerBase
     {
-        // GET: api/ExchangeRates
-        [HttpGet]
+        //GET: api/ExchangeRates/All
+        [HttpGet("All")]
         public CurrencyRates Get()
         {
-            return new CurrencyRates("USD");
+            var currencyRate = new CurrencyRates("USD"); ;
+            return currencyRate;
         }
 
-        // GET: api/ExchangeRates/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
+        // GET: api/ExchangeRates?from=GBP&to=EUR
+        [HttpGet]
+        public double Get([FromQuery]string from, [FromQuery]string to)
         {
-            return "value";
-        }
+            if (string.IsNullOrEmpty(from) || string.IsNullOrEmpty(to))
+                throw new Exception("From Currency & To Currency are required. E.g. api/ExchangeRates?from=GBP&to=EUR");
 
-        // POST: api/ExchangeRates
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
+            if (from.ToLower() == to.ToLower()) return 1;
 
-        // PUT: api/ExchangeRates/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+            var currencyRate = new CurrencyRates("USD");
+            if(currencyRate.Rates.ContainsKey(from) && currencyRate.Rates.ContainsKey(to)
+                && currencyRate.Rates[from] != 0)
+                return Math.Round(currencyRate.Rates[to]/currencyRate.Rates[from],2);
 
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+            return 0;
+        }        
     }
 }
